@@ -8,7 +8,7 @@ import brain
 # -----------------------------------------------
 # USER INPUT SECTION STARTS
 
-myLocation = "Salem"
+myLocation = "salem"
 APIKEY = "a-4nvo4w-7ernaea3o1"
 
 localityInfo = {
@@ -16,9 +16,9 @@ localityInfo = {
         "schoolZone" : True,
         "activeTime" : ["7:00","17:30"] # schools active from 7 AM till 5:30 PM
         },
-    "hospitalsNearby" : False,
+    "hospitalsNearby" : True,
     "usualSpeedLimit" : 40 # in km/hr
-}
+    }
 
 # USER INPUT SECTION ENDS
 # -----------------------------------------------
