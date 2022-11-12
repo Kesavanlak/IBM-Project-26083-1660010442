@@ -19,17 +19,18 @@ given the inputs like weather and location.
 #### [> weather.py](./weather.py)
 > This file is a utility function that fetches the weather from OpenWeatherAPI. It returns only certain required parameters of the API response.
 ```python
+
 # Python code
 
 import requests as reqs
 
 def get(myLocation,APIKEY):
-    apiURL = f"https://api.openweathermap.org/data/2.5/weather?q={myLocation}&appid={APIKEY}"
+    apiURL = "https://api.openweathermap.org/data/2.5/weather?q={mylocation}&appid={APIkey}"
     responseJSON = (reqs.get(apiURL)).json()
     returnObject = {
-        "temperature" : responseJSON['main']['temp'] - 273.15,
-        "weather" : [responseJSON['weather'][_]['main'].lower() for _ in range(len(responseJSON['weather']))],
-        "visibility" : responseJSON['visibility']/100, # visibility in percentage where 10km is 100% and 0km is 0%
+         "temperature" : responseJSON['main']['temp'] - 273.15,
+         "weather" : [responseJSON['weather'][_]['main'].lower() for _ in range(len(responseJSON['weather']))],
+         "visibility" : responseJSON['visibility']/100, #visibility in percentage where 10km is 100% and 0km is 0%
     }
     if("rain" in responseJSON):
         returnObject["rain"] = [responseJSON["rain"][key] for key in responseJSON["rain"]]
@@ -39,6 +40,7 @@ def get(myLocation,APIKEY):
 #### [> brain.py](./brain.py)
 > This file is a utility function that returns only essential information to be displayed at the hardware side and abstracts all the unnecessary details. This is where the code flow logic is implemented.
 ```python
+
 # Python code
 
 # IMPORT SECTION STARTS
@@ -49,9 +51,9 @@ from datetime import datetime as dt
 # IMPORT SECTION ENDS
 # -----------------------------------------------
 # UTILITY LOGIC SECTION STARTS
+
 def processConditions(myLocation,APIKEY,localityInfo):
     weatherData = weather.get(myLocation,APIKEY)
-
     finalSpeed = localityInfo["usualSpeedLimit"] if "rain" not in weatherData else localityInfo["usualSpeedLimit"]/2
     finalSpeed = finalSpeed if weatherData["visibility"]>35 else finalSpeed/2
 
@@ -65,7 +67,7 @@ def processConditions(myLocation,APIKEY,localityInfo):
         else:
             # school zone
             now = [dt.now().hour,dt.now().minute]
-            activeTime = [list(map(int,_.split(":"))) for _ in localityInfo["schools"]["activeTime"]]
+            activeTime = [list(map(int,r.split(":"))) for r in localityInfo["schools"]["activeTime"]]
             doNotHonk = activeTime[0][0]<=now[0]<=activeTime[1][0] and activeTime[0][1]<=now[1]<=activeTime[1][1]
 
     return({
@@ -74,11 +76,11 @@ def processConditions(myLocation,APIKEY,localityInfo):
     })
 
 # UTILITY LOGIC SECTION ENDS
-```
 
 #### [> main.py](./main.py)
 > The code that runs in a forever loop in the micro-controller. This calls all the util functions from other python files and based on the return value transduces changes in the output hardware display.
 ```python
+
 # Python code
 
 # IMPORT SECTION STARTS
@@ -89,17 +91,17 @@ import brain
 # -----------------------------------------------
 # USER INPUT SECTION STARTS
 
-myLocation = "Chennai,IN"
-APIKEY = "9cd610e5fd400c74212074c7ace0d62c"
+myLocation = "salem"
+APIKEY = "a-4nvo4w-7ernaea3o1"
 
 localityInfo = {
     "schools" : {
         "schoolZone" : True,
         "activeTime" : ["7:00","17:30"] # schools active from 7 AM till 5:30 PM
         },
-    "hospitalsNearby" : False,
+    "hospitalsNearby" : True,
     "usualSpeedLimit" : 40 # in km/hr
-}
+    }
 
 # USER INPUT SECTION ENDS
 # -----------------------------------------------
@@ -112,10 +114,11 @@ MICRO CONTROLLER CODE WILL BE ADDED IN SPRINT 2 AS PER OUR PLANNED SPRINT SCHEDU
 '''
 
 # MICRO-CONTROLLER CODE ENDS
-```
+
 
 ### Output :
 ```python
+
 # Code Output
 {'speed': 40, 'doNotHonk': False}
 ```
